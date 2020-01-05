@@ -1,0 +1,113 @@
+{
+  "root": true,
+  "plugins": ["eslint-plugin", "@typescript-eslint", "jest"],
+  "env": {
+    "es6": true,
+    "jest": true,
+    "browser": true
+  },
+  "globals": {
+    "win": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb-base"
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".ts", ".json", ".tsx", ".d.ts", ".js"]
+      }
+    }
+  },
+  "rules": {
+    "comma-dangle": "off",
+    "@typescript-eslint/indent": "off",
+    "prefer-default-export": "off",
+    "import/prefer-default-export": "off",
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "camelcase": "error",
+    "react/jsx-closing-bracket-location": "error",
+    "react/jsx-equals-spacing": [2, "never"],
+    "react/no-string-refs": "error",
+    "react/self-closing-comp": "error",
+    "import/no-extraneous-dependencies": "off",
+    "global-require": "off",
+    "lines-between-class-members": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/explicit-member-accessibility": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "no-use-before-define": "off",
+    "arrow-parens": "off",
+    "import/extensions": "off",
+    "react/prop-types": "off",
+    "no-else-return": "off",
+    "linebreak-style": "off",
+    "operator-linebreak": "off",
+    "max-len": "off",
+    "no-trailing-spaces": "off",
+    "object-curly-newline": "off",
+    "prefer-template": "off",
+    "no-empty": "off",
+    "no-case-declarations": "off",
+    "spaced-comment": "off",
+    "no-param-reassign": "off",
+    "consistent-return": "off",
+    "no-shadow": "off",
+    "no-plusplus": "off",
+    "class-methods-use-this": "off",
+    "no-restricted-globals": "off",
+    "no-inner-declarations": "off",
+    "import/export": "off",
+    "no-redeclare": "off",
+    "no-bitwise": "off",
+    "no-console": "off"
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": "./tsconfig.json"
+  },
+  "overrides": [
+    {
+      "files": [
+        "nodes_modules/eslint-plugin-tslint/tests/**/*.ts",
+        "nodes_modules/eslint-plugin/tests/**/*.test.ts",
+        "nodes_modules/parser/tests/**/*.ts",
+        "nodes_modules/typescript-estree/tests/**/*.ts"
+      ],
+      "rules": {
+        "jest/no-disabled-tests": "warn",
+        "jest/no-focused-tests": "error",
+        "jest/no-alias-methods": "error",
+        "jest/no-identical-title": "error",
+        "jest/no-jasmine-globals": "error",
+        "jest/no-jest-import": "error",
+        "jest/no-test-prefixes": "error",
+        "jest/no-test-callback": "error",
+        "jest/no-test-return-statement": "error",
+        "jest/prefer-to-have-length": "warn",
+        "jest/prefer-spy-on": "error",
+        "jest/valid-expect": "error"
+      }
+    },
+    {
+      "files": [
+        "nodes_modules/eslint-plugin/test/**/*.ts",
+        "nodes_modules/eslint-plugin-tslint/tests/**/*.spec.ts"
+      ],
+      "rules": {
+        "eslint-plugin/no-identical-tests": "error"
+      }
+    }
+  ]
+}

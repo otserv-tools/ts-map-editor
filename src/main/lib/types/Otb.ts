@@ -1,0 +1,3 @@
+export const OtbFormat = {
+  Datalength: 0x04 + 0x04 + 0x04 + 0x80
+};
