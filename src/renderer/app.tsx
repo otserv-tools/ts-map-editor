@@ -6,9 +6,10 @@ import { finishedLoadingOtb } from './actions/itemActions';
 
 import Application from './components/Application';
 import store from './store';
+import { OTBData } from './types/itemTypes';
 
-require('electron').ipcRenderer.on('hello', (event, message) => {
-  store.dispatch(finishedLoadingOtb(message));
+require('electron').ipcRenderer.on('otbData', (event, otbData: OTBData) => {
+  store.dispatch(finishedLoadingOtb(otbData));
 });
 
 // Create main element

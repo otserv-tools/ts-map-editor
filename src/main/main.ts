@@ -23,7 +23,6 @@ const createWindow = async () => {
     await installExtensions();
   }
 
-  console.log(__dirname);
   browserWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -47,7 +46,7 @@ const createWindow = async () => {
 
   browserWindow.webContents.on('did-finish-load', () => {
     const data = readOTB();
-    browserWindow.webContents.send('hello', data);
+    browserWindow.webContents.send('otbData', data);
   });
 
   if (process.env.NODE_ENV !== 'production') {
@@ -61,20 +60,6 @@ const createWindow = async () => {
     browserWindow = null;
   });
 };
-
-const { ipcMain } = require('electron');
-
-ipcMain.on('asynchronous-message', (event, arg) => {
-  console.log(arg); // prints "ping"
-  event.reply('asynchronous-reply', 'pong');
-});
-
-/*
-ipcMain.on('synchronous-message', (event, arg) => {
-  console.log(arg); // prints "ping"
-  event.returnValue = 'pong2';
-});
-*/
 
 app.on('ready', createWindow);
 

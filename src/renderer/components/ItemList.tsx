@@ -13,12 +13,6 @@ import { RootState } from '../reducers/index';
 require('./ItemList.scss');
 const img = require('./item.png');
 
-const ViewTypes = {
-  FULL: 0,
-  HALF_LEFT: 1,
-  HALF_RIGHT: 2
-};
-
 let containerCount = 0;
 interface ItemContainerProps {
   style?: any;
@@ -44,86 +38,47 @@ interface Props {
 
 const excludedItems: number[] = [104, 106];
 
-class ItemList extends React.Component<Props, { dataProvider: DataProvider }> {
-  private layoutProvider;
-
-  state = { dataProvider: new DataProvider((r1, r2) => r1 !== r2) };
-
-  // Re-run the filter whenever the list array or filter text changes:
-  filter = memoize((items: ServerItem[]) => items.filter(item => excludedItems.includes(item.id)));
-
-  handleChange = event => {
-    // this.setState({ items: event.target.value });
-  };
-
-  constructor(args) {
-    super(args);
-
-    // const width = window.innerWidth;
-
-    // Create the data provider and provide method which takes in two rows of data and return if those two are different or not.
-    //Create the layout provider
-    //First method: Given an index return the type of item e.g ListItemType1, ListItemType2 in case you have variety of items in your list/grid
-    //Second: Given a type and object set the height and width for that type on given object
-    //If you need data based check you can access your data provider here
-    //You'll need data in most cases, we don't provide it by default to enable things like data virtualization in the future
-    //NOTE: For complex lists LayoutProvider will also be complex it would then make sense to move it to a different file
-    this.layoutProvider = new LayoutProvider(
-      () => ViewTypes.FULL,
-      (type, dim) => {
-        dim.width = 500;
-        dim.height = 70;
-      }
-    );
-
-    this.rowRenderer = this.rowRenderer.bind(this);
-
-    //Since component should always render once data has changed, make data provider part of the state
-    /*this.state = {
-      dataProvider: dataProvider.cloneWithRows(this.props.otbData.items)
-    };*/
-  }
-
-  generateArray(n: number) {
-    const arr = new Array(n);
-    for (let i = 0; i < n; i++) {
-      arr[i] = { img, id: i, name: `Item ${i}` };
-    }
-    return arr;
-  }
-
-  //Given type and data return the view component
-  rowRenderer(type, item) {
-    return (
-      <ItemContainer className="item-container">
-        <img src={item.img} />
-        <p>
-          {item.id} - {item.name}
-        </p>
-      </ItemContainer>
-    );
-  }
-
-  render() {
-    console.log(this.props);
-    return (
-      <RecyclerListView
-        style={styles.listStyle}
-        layoutProvider={this.layoutProvider}
-        dataProvider={this.state.dataProvider}
-        rowRenderer={this.rowRenderer}
-      />
-    );
-  }
-}
-
 const layoutProvider = new LayoutProvider(
-  () => ViewTypes.FULL,
+  () => 0,
   (type, dim) => {
     dim.width = 500;
     dim.height = 70;
   }
 );
+
+// TODO Use this for more than one item per row
+/*
+new LayoutProvider(
+  index => {
+    if (index % 3 === 0) {
+      return ViewTypes.FULL;
+    } else if (index % 3 === 1) {
+      return ViewTypes.HALF_LEFT;
+    } else {
+      return ViewTypes.HALF_RIGHT;
+    }
+  },
+  (type, dim) => {
+    switch (type) {
+      case ViewTypes.HALF_LEFT:
+        dim.width = width / 2 - 0.0001;
+        dim.height = 160;
+        break;
+      case ViewTypes.HALF_RIGHT:
+        dim.width = width / 2;
+        dim.height = 160;
+        break;
+      case ViewTypes.FULL:
+        dim.width = width;
+        dim.height = 140;
+        break;
+      default:
+        dim.width = 0;
+        dim.height = 0;
+    }
+  }
+);
+*/
 
 const renderRow = (type, item: ServerItem) => (
   <ItemContainer className="item-container">
@@ -134,17 +89,17 @@ const renderRow = (type, item: ServerItem) => (
   </ItemContainer>
 );
 
-export const ItemList2 = () => {
-  const items = useSelector((state: RootState) => state.items.otbData?.items);
-  console.log('Items: ', items);
+const ItemList = () => {
+  const items = useSelector((state: RootState) => state.items.otbData.items);
+  const itemFilter = useSelector((state: RootState) => state.items.itemFilter);
 
   const [dataProvider, setDataProvider] = React.useState(
     new DataProvider((r1: ServerItem, r2: ServerItem) => r1.id !== r2.id)
   );
 
   React.useEffect(() => {
-    setDataProvider(dataProvider.cloneWithRows(items || []));
-  }, [items]);
+    setDataProvider(dataProvider.cloneWithRows(items.filter(itemFilter)));
+  }, [items, itemFilter]);
 
   return (
     <RecyclerListView

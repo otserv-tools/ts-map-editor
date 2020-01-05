@@ -4,7 +4,7 @@ import * as React from 'react';
 import SplitPane from 'react-split-pane';
 import ItemListContainer from '../containers/ItemListContainer';
 import MainArea from './MainArea';
-import { ItemList2 } from './ItemList';
+import ItemList from './ItemList';
 
 require('./Application.scss');
 
@@ -22,7 +22,7 @@ const Application = () => (
 const App2 = () => (
   <div className="app">
     <SplitPane className="split-pane" split="vertical" defaultSize="50%">
-      <ItemList2 />
+      <ItemList />
       <MainArea />
     </SplitPane>
   </div>
