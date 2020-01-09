@@ -1,11 +1,5 @@
 # Experiment for MMORPG map editor written using Electron and Typescript.
 
-[React](https://reactjs.org/)
-[Webpack](https://webpack.js.org/)
-[TypeScript](https://www.typescriptlang.org/)
-[Electron](https://electronjs.org/)
-[Redux](https://redux.js.org/)
-
 This is an [Electron](https://electronjs.org/) application based on [React](https://reactjs.org/), [Redux](https://redux.js.org/), and [Webpack](https://webpack.js.org/) using [TypeScript](https://www.typescriptlang.org/).
 
 This project was based on [this Electron React Typescript Boilerplate](https://github.com/Robinfr/electron-react-typescript).
