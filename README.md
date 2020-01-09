@@ -2,8 +2,6 @@
 
 ## Other Applications
 
-==========
-
 - To host your MMORPG game server, you can use [The Forgotten Server](https://github.com/otland/forgottenserver).
 - To play your MMORPG game, you can use [OTClient](https://github.com/edubart/otclient)
 - To map your MMORPG game, you can use [RME's Map Editor](https://github.com/hjnilsson/rme) (Or this one, assuming it is ever finished).
