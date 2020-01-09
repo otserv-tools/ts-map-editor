@@ -1,11 +1,11 @@
-export default class BaseIO {
+export default class Logger {
   protected debug: boolean = false;
 
   setDebug(value: boolean) {
     this.debug = value;
   }
 
-  protected abort(msg: string) {
+  abort(msg: string) {
     this.logError(msg);
     process.exit(1);
   }
@@ -13,28 +13,28 @@ export default class BaseIO {
   /**
    * Debug logging
    */
-  protected logd(msg: string) {
+  logd(msg: string) {
     if (this.debug === true) {
       console.log(msg);
     }
   }
 
-  protected log(msg: string) {
+  log(msg: string) {
     console.log('[LOG] ' + msg);
   }
 
-  protected logInfo(msg: string) {
+  logInfo(msg: string) {
     console.log('[INFO] ' + msg);
   }
 
   /**
    * Warning logging
    */
-  protected logWarning(msg: string) {
+  logWarning(msg: string) {
     console.log('[WARN] ' + msg);
   }
 
-  protected logError(msg: string) {
+  logError(msg: string) {
     console.log('[ERROR] ' + msg);
   }
 }

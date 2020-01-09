@@ -3,6 +3,8 @@ import { OTBReader } from './io/otb/OtbReader';
 import { SprReader } from './io/spr/SprReader';
 import ClientInfo from './Client';
 import { DatReader } from './io/dat/DatReader';
+import Sprite from './Sprite';
+import ClientItem from './ClientItem';
 
 const { performance } = require('perf_hooks');
 
@@ -20,7 +22,6 @@ export function readOTB() {
 
   time(() => reader.readOTB());
 
-  // console.log(reader.getItemData().items.find(i => i.id === 6497));
   return reader.getItemData();
 }
 
@@ -32,37 +33,42 @@ function readClientFile(path: string) {
   return clientInfo;
 }
 
-function readSpr() {
+function readSpr(sprites: { [id: number]: Sprite }): { [id: number]: Sprite } {
   const clientPath = 'data/clients.json';
   const clientInfo = readClientFile(clientPath);
 
   const path = 'data/tibia.spr';
-  const reader = new SprReader(path);
+  const reader = new SprReader(path, sprites);
 
   time(() => reader.readSpr(clientInfo));
 
   return reader.sprites;
 }
 
-export function readDat() {
+interface DatResult {
+  baseSprites: { [id: number]: Sprite };
+  items: { [id: number]: ClientItem };
+}
+
+export function readDat(): DatResult {
   const clientPath = 'data/clients.json';
   const clientInfo = readClientFile(clientPath);
 
-  const sprites = readSpr();
-
   const path = 'data/tibia.dat';
-  const reader = new DatReader(path, sprites);
-  // reader.setDebug(true);
+  const reader = new DatReader(path);
 
   time(() => reader.readDat(clientInfo));
 
+  const { baseSprites, items } = reader;
   return {
-    items: reader.items
+    baseSprites,
+    items
   };
 }
-/*
-console.log('OTB:');
-readOTB();
-console.log('SPR & DAT:');
-readDat();
-*/
+
+export function readDatAndSpr() {
+  const { baseSprites, items: clientItems } = readDat();
+  const sprites = readSpr(baseSprites);
+
+  return { clientItems, sprites };
+}

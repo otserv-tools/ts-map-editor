@@ -1,17 +1,20 @@
 import { Reducer } from 'redux';
-import { OTBData } from '../types/itemTypes';
+import { OTBData } from '../../lib/types/Otb';
+import ClientItem from '../../lib/ClientItem';
+import Sprite from '../../lib/Sprite';
 
-import { FINISHED_LOADING_OTB, ItemAction } from '../actions/itemActions';
-import ServerItem from '../../main/lib/ServerItem';
+import * as ItemActions from '../actions/itemActions';
+import ServerItem from '../../lib/ServerItem';
 
 export interface ItemState {
   readonly otbData?: OTBData;
-  readonly itemData?: any;
+  readonly clientItems?: { [id: number]: ClientItem };
+  readonly sprites?: { [id: number]: Sprite };
+
   readonly itemFilter: (item: ServerItem) => boolean;
 }
 
 const defaultState = {
-  itemData: undefined,
   otbData: {
     majorVersion: -1,
     minorVersion: -1,
@@ -21,12 +24,21 @@ const defaultState = {
   itemFilter: (item: ServerItem) => item.name !== ''
 };
 
-export const itemReducer: Reducer<ItemState> = (state = defaultState, action: ItemAction) => {
+export const itemReducer: Reducer<ItemState> = (
+  state = defaultState,
+  action: ItemActions.ItemAction
+) => {
   switch (action.type) {
-    case FINISHED_LOADING_OTB:
+    case ItemActions.FINISHED_LOADING_OTB:
       return {
         ...state,
         otbData: action.payload
+      };
+    case ItemActions.FINISHED_LOADING_DAT_SPR:
+      return {
+        ...state,
+        clientItems: action.payload.clientItems,
+        sprites: action.payload.sprites
       };
     default:
       return state;

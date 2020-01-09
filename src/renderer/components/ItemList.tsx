@@ -4,10 +4,9 @@
  */
 import * as React from 'react';
 import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview/web';
-import memoize from 'memoize-one';
 import { useSelector } from 'react-redux';
-import { OTBData } from '../types/itemTypes';
-import ServerItem from '../lib/ServerItem';
+import { OTBData } from '../../lib/types/Otb';
+import ServerItem from '../../lib/ServerItem';
 import { RootState } from '../reducers/index';
 
 require('./ItemList.scss');
@@ -98,7 +97,7 @@ const ItemList = () => {
   );
 
   React.useEffect(() => {
-    setDataProvider(dataProvider.cloneWithRows(items.filter(itemFilter)));
+    setDataProvider(dataProvider.cloneWithRows(items.filter(item => itemFilter(item))));
   }, [items, itemFilter]);
 
   return (

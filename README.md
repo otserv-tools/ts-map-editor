@@ -1,6 +1,4 @@
-# electron-react-typescript
-
-### Experiment for MMORPG map editor written using Electron and Typescript.
+# Experiment for MMORPG map editor written using Electron and Typescript.
 
 [React](https://reactjs.org/)
 [Webpack](https://webpack.js.org/)

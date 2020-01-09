@@ -1,12 +1,8 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { readDat, readOTB } from './lib/main';
 
 let browserWindow: BrowserWindow | null;
-
-console.log(readDat);
-console.log(readOTB);
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
@@ -43,11 +39,6 @@ const createWindow = async () => {
       })
     );
   }
-
-  browserWindow.webContents.on('did-finish-load', () => {
-    const data = readOTB();
-    browserWindow.webContents.send('otbData', data);
-  });
 
   if (process.env.NODE_ENV !== 'production') {
     // Open DevTools, see https://github.com/electron/electron/issues/12438 for why we wait for dom-ready

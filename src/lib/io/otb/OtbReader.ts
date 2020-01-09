@@ -6,15 +6,14 @@ import {
   ServerItemAttribute,
   showServerItemAttribute
 } from '../../enums';
-import { OtbFormat } from '../../types/Otb';
-import { Items } from '../../types/Items';
+import { OtbFormat, OTBData } from '../../types/Otb';
 import ServerItem from '../../ServerItem';
 import { ushort } from '../../types';
 
 import { readEscapedBytes, createBinaryString, ZeroOffset } from '../util';
-import BaseIO from '../BaseIO';
+import Logger from '../Logger';
 
-export class OTBReader extends BaseIO {
+export class OTBReader extends Logger {
   private buffer: Buffer;
   private cursor: number = 0;
   private path: string;
@@ -22,7 +21,7 @@ export class OTBReader extends BaseIO {
 
   private lastEscaped: boolean = false;
 
-  private itemData: Items = {
+  private itemData: OTBData = {
     majorVersion: 0,
     minorVersion: 0,
     buildNumber: 0,

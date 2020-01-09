@@ -1,13 +1,14 @@
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { OTBData } from '../types/itemTypes';
+import { OTBData } from '../../lib/types/Otb';
 
 import ItemList from '../components/ItemList';
 import { RootState } from '../reducers';
 import { ItemAction, finishedLoadingOtb } from '../actions/itemActions';
 
 const mapStateToProps = (state: RootState) => ({
-  itemData: state.items.itemData,
+  clientItems: state.items.clientItems,
+  sprites: state.items.sprites,
   otbData: state.items.otbData
 });
 

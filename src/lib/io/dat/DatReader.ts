@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import BaseIO from '../BaseIO';
+import Logger from '../Logger';
 import { showHex } from '../util';
 import { ServerItemType, TileStackOrder, DatFlag, showDatFlag } from '../../enums';
 import { byte } from '../../types';
@@ -10,24 +10,23 @@ import ClientItem from '../../ClientItem';
 /**
  * Reader for .dat files
  */
-export class DatReader extends BaseIO {
+export class DatReader extends Logger {
+  items: { [id: number]: ClientItem } = {};
+
+  /**
+   * Contains information about sprite ids.
+   */
+  baseSprites: { [id: number]: Sprite } = {};
+
   private buffer: Buffer;
 
   private cursor: number = 0;
-  private spriteCursor: number = 0;
 
   private path: string;
-  private lastEscaped: boolean = false;
 
-  items = {};
-  sprites: { [id: string]: Sprite };
-
-  private cursorType: CursorType = CursorType.Main;
-
-  constructor(path: string, sprites: { [id: string]: Sprite }) {
+  constructor(path: string) {
     super();
     this.path = path;
-    this.sprites = sprites;
   }
 
   readDat(client: ClientInfo, extended: boolean = true, useFrameDurations: boolean = true) {
@@ -83,7 +82,6 @@ export class DatReader extends BaseIO {
         item.frames;
 
       if (item.isAnimation && useFrameDurations) {
-        this.logd('--> Skip frame durations <--');
         this.readAnimation(item);
 
         // this.nextBytes(6 + 8 * item.frames);
@@ -116,12 +114,11 @@ export class DatReader extends BaseIO {
   private readSpriteIds(item: ClientItem) {
     for (let i = 0; i < item.numSprites; ++i) {
       const spriteId = this.nextUInt32();
-      let sprite = this.sprites[spriteId];
+      let sprite = this.baseSprites[spriteId];
       if (sprite === undefined) {
-        console.log(`Sprite ${spriteId} was undefined.`);
         sprite = new Sprite();
         sprite.id = spriteId;
-        this.sprites[spriteId] = sprite;
+        this.baseSprites[spriteId] = sprite;
       }
 
       item.spriteList.push(sprite);
@@ -170,10 +167,6 @@ export class DatReader extends BaseIO {
         case DatFlag.MultiUse:
           item.multiUse = true;
           break;
-
-        /* case DatFlag.HasCharges:
-                item.hasCharges = true;
-                break; */
 
         case DatFlag.Writable:
           item.readable = true;
@@ -356,9 +349,4 @@ export class DatReader extends BaseIO {
     this.logd(`${value.toString(10)} [Base 10]`);
     return value;
   }
-}
-
-enum CursorType {
-  Main,
-  Sprite
 }

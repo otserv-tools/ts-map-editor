@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import BaseIO from '../BaseIO';
+import Logger from '../Logger';
 import { showHex } from '../util';
 import ClientInfo from '../../Client';
 import Sprite from '../../Sprite';
@@ -7,22 +7,28 @@ import Sprite from '../../Sprite';
 /**
  * Reader for .spr files
  */
-export class SprReader extends BaseIO {
+export class SprReader extends Logger {
+  /**
+   * Contains the sprite data.
+   */
+  sprites: { [id: number]: Sprite };
+
   private buffer: Buffer;
 
   private cursor: number = 0;
-  private spriteCursor: number = 0;
 
   private path: string;
-  private lastEscaped: boolean = false;
 
-  public sprites = {};
-
-  private cursorType: CursorType = CursorType.Main;
-
-  constructor(path: string) {
+  constructor(path: string, sprites: { [id: number]: Sprite }) {
     super();
     this.path = path;
+
+    if (!sprites) {
+      this.abort(
+        'The "sprites" argument is null/undefined. It should contain sprite information from the .dat file.'
+      );
+    }
+    this.sprites = sprites;
   }
 
   readSpr(client: ClientInfo, extended: boolean = true, transparency: boolean = false) {
@@ -35,33 +41,39 @@ export class SprReader extends BaseIO {
 
     const amountOfImages = extended ? this.nextUInt32() : this.nextUInt16();
 
-    let prevMainCursor = this.cursor;
+    let spriteIndexCursor = this.cursor;
 
     // Does sprite index begin at one?
-    for (let i = 1; i <= amountOfImages; ++i) {
-      if (this.sprites[i] !== undefined) {
-        console.log('Duplicate');
-      }
-      this.cursor = prevMainCursor;
+    for (let id = 1; id <= amountOfImages; ++id) {
+      this.cursor = spriteIndexCursor;
       const spriteIndex = this.nextUInt32();
-      // console.log('SpriteIndex ', spriteIndex);
-      prevMainCursor = this.cursor;
+      spriteIndexCursor = this.cursor;
 
       // Why +3?
       this.cursor = spriteIndex + 3;
 
       const size = this.nextUInt16();
 
-      const sprite = new Sprite();
-      sprite.id = i;
+      // Skip the sprite if the sprites info from the .dat file does not contain it.
+      const sprite = this.sprites[id];
+      if (sprite === undefined) {
+        this.nextBytes(size);
+        continue;
+      }
+
+      if (size > 0 && sprite.size > 0) {
+        console.log('Warning size');
+        continue;
+      }
+
+      sprite.id = id;
       sprite.size = size;
       sprite.compressedPixels = this.nextBytes(size);
+
       sprite.transparent = transparency;
 
-      this.sprites[i] = sprite;
+      this.sprites[id] = sprite;
     }
-
-    console.log('Done');
   }
 
   private nextByte() {
@@ -91,9 +103,4 @@ export class SprReader extends BaseIO {
     this.logd('0x' + value.toString(16));
     return value;
   }
-}
-
-enum CursorType {
-  Main,
-  Sprite
 }
